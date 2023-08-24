@@ -10,5 +10,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    proxy: {
+      '/dev-api': {
+        target: 'http://consult-api.itheima.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/dev-api/, '')
+      }
+    }
   }
 })

@@ -35,7 +35,8 @@ module.exports = {
       }
     ],
     // vue/no-setup-props-destructure是一个ESLint规则，用于检测Vue 3中的组件选项setup()函数中是否对props进行解构赋值。
-    'vue/no-setup-props-destructure': ['off']
+    'vue/no-setup-props-destructure': ['off'],
+    '@typescript-eslint/no-unused-vars': ['off']
   },
   parserOptions: {
     ecmaVersion: 'latest'
