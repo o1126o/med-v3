@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import pinia from './stores'
 import './styles/main.scss'
+import 'virtual:svg-icons-register'
 
 // 引入vant
 import 'vant/lib/index.css'
