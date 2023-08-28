@@ -36,9 +36,9 @@ const handleLogin = async () => {
       ? await loginByPassword(loginFrom.value.mobile, loginFrom.value.password)
       : await loginByMobile(loginFrom.value.mobile, loginFrom.value.code)
     console.log(loginRes)
-    store.setUser(loginRes.data)
+    store.setUser(loginRes.data.data)
     // 如果有回调地址的话就回跳 否则跳到个人中心
-    router.push((route.query.returnUrl as string) || '/')
+    router.push((route.query.returnUrl as string) || '/user')
     showToast('登录成功')
   } catch (error) {
     console.log(error)
@@ -71,7 +71,7 @@ onUnmounted(() => {
 <template>
   <div class="login-page">
     <!-- 导航 -->
-    <CpNavBar title="注册" @click-right="router.push('/register')"></CpNavBar>
+    <CpNavBar sidTitle="注册" title="登录" @click-right="router.push('/register')"></CpNavBar>
     <div class="login-head">
       <!-- 标题切换 -->
       <h3>{{ isPass ? '密码登陆' : '短信验证码登录' }}</h3>
@@ -187,6 +187,11 @@ onUnmounted(() => {
         color: var(--cp-primary);
         padding: 0 5px;
       }
+    }
+
+    .van-button {
+      background-color: var(--cp-primary);
+      border: 0;
     }
   }
 }

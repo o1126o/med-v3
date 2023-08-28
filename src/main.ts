@@ -14,4 +14,7 @@ app.use(pinia)
 
 app.use(router)
 
+// 引入权限文件
+import './permission'
+
 app.mount('#app')

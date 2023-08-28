@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 defineProps<{
   title?: string
+  sidTitle?: string
 }>()
 const onClickLeft = () => {
   // 判断历史记录中是否有回退
@@ -26,7 +27,8 @@ const onClickRight = () => {
       left-arrow
       @click-left="onClickLeft"
       fixed
-      :right-text="title"
+      :title="title"
+      :right-text="sidTitle"
       @click-right="onClickRight"
     ></van-nav-bar>
   </div>
@@ -42,6 +44,7 @@ const onClickRight = () => {
 
     &__text {
       font-size: 15px;
+      color: val(--cp-primary);
     }
   }
 }

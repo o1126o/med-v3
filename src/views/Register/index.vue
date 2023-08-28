@@ -6,7 +6,7 @@ const router = useRouter()
 <template>
   <div class="login-page">
     <!-- 导航 -->
-    <CpNavBar title="登录" @click-right="router.push('/login')"></CpNavBar>
+    <CpNavBar sidTitle="登录" title="注册" @click-right="router.push('/login')"></CpNavBar>
   </div>
 </template>
 <style lang="scss" scoped></style>
