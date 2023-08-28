@@ -1,48 +1,96 @@
 <script setup lang="ts">
 import CpNavBar from '@/components/CpNavBar.vue'
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { loginByPassword, sendMobileCode, loginByMobile } from '@/servces/user'
+import { useUserStore } from '@/stores'
+import { useRoute, useRouter } from 'vue-router'
+import { ref, onUnmounted } from 'vue'
 import CpIcon from '@/components/CpIcon.vue'
-import { mobileRules, passwordRules } from '@/utils/rules'
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { showToast } from 'vant'
 
 const router = useRouter()
+const route = useRoute()
+const store = useUserStore()
+
+// 切换数据
+const isPass = ref<boolean>(true)
 
 // 表单数据
 const loginFrom = ref({
   mobile: '13230000001',
-  password: 'abc12345'
+  password: 'abc12345',
+  code: ''
 })
 // 是否同意协议
-const agree = ref(false)
+const agree = ref<boolean>(false)
 // 控制密码显示与隐藏
-const show = ref(false)
+const show = ref<boolean>(false)
 
 // 登录
-const login = () => {
+const handleLogin = async () => {
+  console.log('123456')
   if (!agree.value) return showToast('请勾选我已同意')
+  // 通过验证
+  try {
+    const loginRes = isPass.value
+      ? await loginByPassword(loginFrom.value.mobile, loginFrom.value.password)
+      : await loginByMobile(loginFrom.value.mobile, loginFrom.value.code)
+    console.log(loginRes)
+    store.setUser(loginRes.data)
+    // 如果有回调地址的话就回跳 否则跳到个人中心
+    router.push((route.query.returnUrl as string) || '/')
+    showToast('登录成功')
+  } catch (error) {
+    console.log(error)
+  }
 }
+
+// 发送验证码
+const time = ref(0) // 倒计时
+let timeId: number = 0
+const send = async () => {
+  // 倒计时time的值⼤于0，此时不能发送验证码
+  if (time.value > 0) return
+  // 调用接口
+  const codeRef = await sendMobileCode(loginFrom.value.mobile, 'login')
+  console.log('codeRef=>', codeRef.data.data.code)
+  // 倒计时逻辑
+  showToast('发送成功')
+  time.value = 60
+  // 倒计时
+  clearInterval(timeId)
+  timeId = setInterval(() => {
+    time.value--
+    if (time.value <= 0) window.clearInterval(timeId)
+  }, 1000)
+}
+onUnmounted(() => {
+  clearInterval(timeId)
+})
 </script>
 <template>
   <div class="login-page">
     <!-- 导航 -->
     <CpNavBar title="注册" @click-right="router.push('/register')"></CpNavBar>
     <div class="login-head">
-      <h3>密码登陆</h3>
-      <a href="javascript:;">
-        <span>短信验证码登录</span>
+      <!-- 标题切换 -->
+      <h3>{{ isPass ? '密码登陆' : '短信验证码登录' }}</h3>
+      <a href="javascript:;" @click="isPass = !isPass">
+        <span>{{ isPass ? '短信验证码登录' : '密码登陆' }}</span>
         <van-icon name="arrow"></van-icon>
       </a>
     </div>
     <!-- form表单 -->
-    <van-form autocomplete="off" @submit="login">
+    <van-form autocomplete="off" @submit="handleLogin">
       <van-field
         v-model="loginFrom.mobile"
         placeholder="请输入手机号"
         type="tel"
         :rules="mobileRules"
       ></van-field>
+      <!-- 密码 -->
       <van-field
+        v-if="isPass"
         v-model="loginFrom.password"
         placeholder="请输入密码"
         :type="show ? 'text' : 'password'"
@@ -50,6 +98,14 @@ const login = () => {
       >
         <template #button>
           <cp-icon @click="show = !show" :name="`login-eye-${show ? 'on' : 'off'}`"></cp-icon>
+        </template>
+      </van-field>
+      <!-- 短信验证码 -->
+      <van-field v-else placeholder="短信验证码" :rules="codeRules" v-model="loginFrom.code">
+        <template #button>
+          <span class="btn-send" @click="send" :class="{ active: time > 0 }">
+            {{ time > 0 ? time + 's后再次发送' : '发送验证码' }}
+          </span>
         </template>
       </van-field>
       <div class="cp-cell">
@@ -133,5 +189,13 @@ const login = () => {
       }
     }
   }
+}
+
+.send-btn {
+  color: var(--cp-primary);
+}
+
+.active {
+  color: rgba(22, 194, 163, 0.5);
 }
 </style>

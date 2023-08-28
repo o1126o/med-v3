@@ -10,7 +10,6 @@ export const useUserStore = defineStore(
     // 设置用户
     const setUser = (u: User) => {
       user.value = u
-      // localStorage.setItem('user', user.value)
     }
     // 清空用户
     const delUser = () => {

@@ -27,7 +27,7 @@ instance.interceptors.request.use(
 // 响应拦截
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
-    if (response.data.code !== 1000) {
+    if (response.data.code !== 10000) {
       // 业务码错误
       showToast(response.data.message)
       return Promise.reject(response.data)
