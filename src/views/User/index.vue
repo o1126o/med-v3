@@ -7,14 +7,14 @@ import { getUserInfo } from '@/servces/user'
 const store = useUserStore()
 const router = useRouter()
 import { ref } from 'vue'
-import type { UserInfo } from '@/types/user'
+import type { UserInfo } from '@/types/user.d.ts'
 
 // 初始化一个变量, 用来保存用户信息
 const user = ref<UserInfo>()
 // 获取用户信息
 const initUserInfo = async () => {
   const userRes = await getUserInfo()
-  user.value = userRes.data.data
+  user.value = userRes.data
   console.log('user.value ', user.value)
 }
 initUserInfo()
@@ -244,6 +244,7 @@ const handleLoyout = async () => {
 
     .van-cell {
       align-items: center;
+      height: 52px;
     }
 
     .cp-icon {

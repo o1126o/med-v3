@@ -24,6 +24,8 @@ export type UserInfo = OmitUser & {
     shippedNumber: number
     finishedNumber: number
   }
+  avatar: string
+  account: string
 }
 
 // 家庭档案-患者信息
@@ -45,3 +47,13 @@ export type Patient = {
 }
 // 家庭档案-患者信息列表
 export type PatientList = Patient[]
+
+export type Patients = {
+  id?: string
+  name: string
+  idCard: string
+  defaultFlag: 0 | 1
+  gender: 0 | 1
+  genderValue?: string
+  age?: number
+}

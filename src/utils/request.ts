@@ -32,7 +32,7 @@ instance.interceptors.response.use(
       showToast(response.data.message)
       return Promise.reject(response.data)
     }
-    return response
+    return response.data
   },
   (error) => {
     // 处理token过期

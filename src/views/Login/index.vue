@@ -36,7 +36,7 @@ const handleLogin = async () => {
       ? await loginByPassword(loginFrom.value.mobile, loginFrom.value.password)
       : await loginByMobile(loginFrom.value.mobile, loginFrom.value.code)
     console.log(loginRes)
-    store.setUser(loginRes.data.data)
+    store.setUser(loginRes.data)
     // 如果有回调地址的话就回跳 否则跳到个人中心
     router.push((route.query.returnUrl as string) || '/user')
     showToast('登录成功')
