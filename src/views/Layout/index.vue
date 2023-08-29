@@ -38,7 +38,6 @@ const tabBarList = [
       </van-tabbar-item>
     </van-tabbar>
     <router-view></router-view>
-    loyout
   </div>
 </template>
 
