@@ -1,4 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import KnowledgeList from './components/KnowledgeList.vue'
+import FollowDoctor from './components/FollowDoctor.vue'
+import type { KnowledgeType } from '@/types/consult'
+const active = ref<KnowledgeType>('recommend')
+import { ref } from 'vue'
+</script>
 
 <template>
   <div class="home-page">
@@ -22,7 +28,7 @@
           </router-link>
         </van-col>
         <van-col span="8">
-          <router-link to="/consult/fast" class="nav">
+          <router-link to="/" class="nav">
             <cp-icon name="home-graphic"></cp-icon>
             <p class="title">极速问诊</p>
             <p class="desc">20s医⽣极速回复</p>
@@ -74,6 +80,22 @@
         </van-swipe-item>
       </van-swipe>
     </div>
+    <!-- 标签 -->
+    <van-tabs v-model:active="active" shrink>
+      <van-tab title="关注" name="like">
+        <FollowDoctor></FollowDoctor>
+        <KnowledgeList type="like"></KnowledgeList>
+      </van-tab>
+      <van-tab title="推荐" name="recommend">
+        <KnowledgeList type="recommend"></KnowledgeList>
+      </van-tab>
+      <van-tab title="减脂" name="fatReduction">
+        <KnowledgeList type="fatReduction"></KnowledgeList>
+      </van-tab>
+      <van-tab title="饮食" name="food">
+        <KnowledgeList type="food"></KnowledgeList>
+      </van-tab>
+    </van-tabs>
   </div>
 </template>
 
@@ -174,8 +196,30 @@
     height: 100px;
 
     img {
-      width: 97%;
+      width: 100%;
       height: 100%;
+    }
+  }
+
+  // 全局覆盖van-tab样式
+  ::v-deep() {
+    .van-tabs {
+      .van-tabs__nav {
+        padding: 0 0 15px 0;
+      }
+
+      .van-tab--active {
+        font-weight: normal;
+      }
+
+      .van-tabs__line {
+        width: 20px;
+        background-color: var(--cp-primary);
+      }
+
+      .van-tab {
+        padding: 0 15px;
+      }
     }
   }
 }
