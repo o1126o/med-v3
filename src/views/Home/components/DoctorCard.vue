@@ -1,20 +1,7 @@
 <script setup lang="ts">
 import type { Doctor } from '@/types/consult'
 import { useFollow } from '@/composable'
-// import { followDoctor } from '@/servces/home'
-// import { ref } from 'vue'
 defineProps<{ item: Doctor }>()
-// 关注逻辑
-// const loading = ref(false)
-// const follow = async (doc: Doctor) => {
-//   loading.value = true
-//   try {
-//     await followDoctor(doc.id)
-//     doc.likeFlag = doc.likeFlag === 1 ? 0 : 1
-//   } finally {
-//     loading.value = false
-//   }
-// }
 const { loading, follow } = useFollow()
 </script>
 

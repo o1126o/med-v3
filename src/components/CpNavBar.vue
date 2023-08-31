@@ -30,21 +30,24 @@ const onClickRight = () => {
       :title="title"
       :right-text="sidTitle"
       @click-right="onClickRight"
-    ></van-nav-bar>
+    >
+    </van-nav-bar>
   </div>
 </template>
 
 <style lang="scss" scoped>
-::v-deep() {
-  .van-nav-bar {
-    &__arrow {
-      font-size: 18px;
-      color: var(--cp-text1);
-    }
+.nav-page {
+  ::v-deep() {
+    .van-nav-bar {
+      &__arrow {
+        font-size: 18px;
+        color: var(--cp-text1);
+      }
 
-    &__text {
-      font-size: 15px;
-      color: val(--cp-primary);
+      &__text {
+        font-size: 15px;
+        color: val(--cp-primary);
+      }
     }
   }
 }
