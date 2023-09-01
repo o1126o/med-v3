@@ -77,7 +77,8 @@ onMounted(() => {
     showConfirmDialog({
       title: '温馨提示',
       message: '是否恢复您之前填写的病情信息呢？',
-      confirmButtonColor: 'var(--cp-primary)'
+      confirmButtonColor: 'var(--cp-primary)',
+      closeOnPopstate: false
     }).then(() => {
       // 确认
       const { illnessDesc, illnessTime, consultFlag, pictures } = store.consult
@@ -117,7 +118,7 @@ onMounted(() => {
         <p>此次病情是否去医院就诊过？</p>
         <cp-radio-btn :options="flagOptions" v-model="form.consultFlag" />
       </div>
-      <!-- // 图片上传 -->
+      <!-- // 图片上传  after-read	文件读取完成后的回调函数-->
       <div class="illness-page-img">
         <van-uploader
           upload-icon="photo-o"
