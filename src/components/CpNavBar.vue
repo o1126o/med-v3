@@ -36,18 +36,20 @@ const onClickRight = () => {
 </template>
 
 <style lang="scss" scoped>
-.nav-page {
-  ::v-deep() {
-    .van-nav-bar {
-      &__arrow {
-        font-size: 18px;
-        color: var(--cp-text1);
-      }
+::v-deep() {
+  .van-nav-bar {
+    &__arrow {
+      font-size: 18px;
+      color: var(--cp-text1);
+    }
 
-      &__text {
-        font-size: 15px;
-        color: val(--cp-primary);
-      }
+    &__text {
+      font-size: 15px;
+      color: val(--cp-primary);
+    }
+
+    &_title {
+      font-weight: normal;
     }
   }
 }

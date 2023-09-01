@@ -85,3 +85,55 @@ export type DoctorPage = {
 
 // 关注的类型，医⽣|⽂章|百科话题|疾病
 export type FollowType = 'doc' | 'knowledge' | 'topic' | 'disease'
+
+// 科室
+export type SubDep = {
+  // 科室ID
+  id: string
+  // 科室名称
+  name: string
+}
+export type TopDep = SubDep & {
+  // ⼆级科室数组
+  child: SubDep[]
+}
+
+import { ConsultType, IllnessTime } from '@/enums'
+// 图⽚列表
+export type Image = {
+  // 图⽚ID
+  id: string
+  // 图⽚地址
+  url: string
+}
+// 问诊记录
+export type Consult = {
+  // 问诊记录ID
+  id: string
+  // 问诊类型
+  type: ConsultType
+  // 快速问诊类型，0 普通 1 三甲
+  illnessType: 0 | 1
+  // 科室ID
+  depId: string
+  // 疾病描述
+  illnessDesc: string
+  // 疾病持续时间
+  illnessTime: IllnessTime
+  // 是否就诊过，0 未就诊过 1 就诊过
+  consultFlag: 0 | 1
+  // 图⽚数组
+  pictures: Image[]
+  // 患者ID
+  patientId: string
+  // 优惠券ID
+  couponId: string
+}
+// 问诊记录-全部可选
+export type PartialConsult = Partial<Consult>
+// Required 转换为全部必须 Partial 转换问全部可选 两个内置的泛型类型
+
+export type ConsultIllness = Pick<
+  PartialConsult,
+  'illnessDesc' | 'illnessTime' | 'consultFlag' | 'pictures'
+>
