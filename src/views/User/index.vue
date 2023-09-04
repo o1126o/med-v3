@@ -22,7 +22,7 @@ initUserInfo()
 const tools = [
   {
     title: '我的问诊',
-    path: ''
+    path: '/user/consult'
   },
   {
     title: '我的处方',

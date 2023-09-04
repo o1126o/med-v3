@@ -3,6 +3,7 @@ import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import { useUserStore } from '@/stores'
 import { showToast } from 'vant'
 import router from '@/router'
+import type { Data } from '../types/request'
 const store = useUserStore()
 
 const instance = axios.create({
@@ -46,8 +47,8 @@ instance.interceptors.response.use(
   }
 )
 
-const request = (url: string, method: Method = 'GET', submitData?: object) => {
-  return instance({
+const request = <T>(url: string, method: Method = 'GET', submitData?: object) => {
+  return instance.request<T, Data<T>>({
     url,
     method,
     [method.toLowerCase() === 'get' ? 'params' : 'data']: submitData
