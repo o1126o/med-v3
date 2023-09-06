@@ -6,8 +6,9 @@ import router from '@/router'
 import type { Data } from '../types/request'
 const store = useUserStore()
 
+const baseURL = '/dev-api'
 const instance = axios.create({
-  baseURL: '/dev-api',
+  baseURL,
   timeout: 3000
 })
 
@@ -55,4 +56,4 @@ const request = <T>(url: string, method: Method = 'GET', submitData?: object) =>
   })
 }
 
-export default request
+export { baseURL, request }

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import { request } from '@/utils/request'
 import type { CodeType } from './types/user.d'
 import type { User, UserInfo, Patient } from '@/types/user.d'
 

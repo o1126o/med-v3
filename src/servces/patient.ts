@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import { request } from '@/utils/request'
 import type { PatientList, Patients } from '@/types/user.d'
 // 获患者信息列表
 export const getPatientList = () => request<PatientList>('/patient/mylist')

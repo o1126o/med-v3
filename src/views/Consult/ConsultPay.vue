@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getConsultOrderPre, createConsultOrder, getConsultOrderPayUrl } from '@/servces/consult'
+import { getConsultOrderPre, createConsultOrder } from '@/servces/consult'
 import { getPatientDetail } from '@/servces/user'
 import { useConsultStore } from '@/stores'
 import type { ConsultOrderPreData } from '@/types/consult'
@@ -96,18 +96,6 @@ onMounted(() => {
   loadData()
   loadPatient()
 })
-
-// 跳转支付
-const pay = async () => {
-  if (paymentMethod.value === undefined) return showToast('请选择支付方式')
-  showToast('跳转支付')
-  const res = await getConsultOrderPayUrl({
-    paymentMethod: paymentMethod.value,
-    orderId: orderId.value,
-    payCallback: 'http://localhost/room'
-  })
-  window.location.href = res.data.payUrl
-}
 </script>
 
 <template>
@@ -145,30 +133,13 @@ const pay = async () => {
       @click="submit"
       :loading="loading"
     />
-    <van-action-sheet
+    <!-- 支付组件 -->
+    <cp-pay-sheet
       v-model:show="show"
-      title="选择⽀付⽅式"
-      :close-on-popstate="false"
-      :closeable="false"
-      :beforeClose="onClose"
-    >
-      <div class="pay-type">
-        <p class="amount">￥{{ payInfo?.actualPayment?.toFixed(2) }}</p>
-        <van-cell-group>
-          <van-cell title="微信⽀付" @click="paymentMethod = 0">
-            <template #icon><cp-icon name="consult-wechat" /></template>
-            <template #extra><van-checkbox :checked="paymentMethod === 0" /></template>
-          </van-cell>
-          <van-cell title="⽀付宝⽀付" @click="paymentMethod = 1">
-            <template #icon><cp-icon name="consult-alipay" /></template>
-            <template #extra><van-checkbox :checked="paymentMethod === 1" /></template>
-          </van-cell>
-        </van-cell-group>
-        <div class="btn">
-          <van-button type="primary" round block @click="pay">⽴即⽀付</van-button>
-        </div>
-      </div>
-    </van-action-sheet>
+      :order-id="orderId"
+      :actualPayment="payInfo?.actualPayment"
+      :onClose="onClose"
+    />
   </div>
 </template>
 
@@ -245,32 +216,6 @@ const pay = async () => {
       font-weight: normal;
       width: 160px;
       background-color: var(--cp-primary);
-    }
-  }
-
-  .pay-type {
-    .amount {
-      padding: 20px;
-      text-align: center;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .btn {
-      padding: 15px;
-    }
-
-    .van-cell {
-      align-items: center;
-
-      .cp-icon {
-        margin-right: 10px;
-        font-size: 18px;
-      }
-
-      .van-checkbox :deep(.van-checkbox__icon) {
-        font-size: 16px;
-      }
     }
   }
 }

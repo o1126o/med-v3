@@ -8,6 +8,7 @@ defineProps<{
 const onClickLeft = () => {
   // 判断历史记录中是否有回退
   if (history.state?.back) {
+    console.log(history.state?.back)
     router.back()
   } else {
     router.push('/')

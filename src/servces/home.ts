@@ -5,7 +5,7 @@ import type {
   PageParams,
   FollowType
 } from '@/types/consult'
-import request from '@/utils/request'
+import { request } from '@/utils/request'
 
 // 文章
 export const getKnowledgePage = (params: KnowledgeParams) =>
