@@ -5,7 +5,7 @@ defineProps<{
 import { ref } from 'vue'
 import type { Image } from '@/types/consult'
 import { uploadImage } from '@/servces/consult'
-import { Toast } from 'vant'
+import { showToast, closeToast } from 'vant'
 import type { UploaderAfterRead } from 'vant/lib/uploader/types'
 const emit = defineEmits<{
   (e: 'send-text', text: string): void
@@ -22,9 +22,9 @@ const sendText = () => {
 const sendImage: UploaderAfterRead = async (data) => {
   if (Array.isArray(data)) return
   if (!data.file) return
-  const t = Toast.loading('正在上传')
+  showToast('正在上传')
   const res = await uploadImage(data.file)
-  t.clear()
+  closeToast()
   emit('send-image', res.data)
 }
 </script>

@@ -52,10 +52,7 @@ const handlePatiem = async () => {
   const validate = new Validator()
   if (!validate.isValid(patient.value.idCard)) return showToast('身份证格式错误')
   const { sex } = validate.getInfo(patient.value.idCard)
-  console.log(sex)
-  console.log(patient.value.gender)
   if (patient.value.gender !== sex) return showToast('性别和身份证不符')
-  console.log(patient.value.defaultFlag)
   patient.value.id ? await editPatient(patient.value) : await addPatient(patient.value)
   showRight.value = false
   loadList()
@@ -152,7 +149,7 @@ const next = async () => {
       <div class="tag" v-if="item.defaultFlag === 1">默认</div>
       <div class="icon" @click="handleShow(item)"><cp-icon name="user-edit" /></div>
     </div>
-    <div class="patient-add" v-if="list.length < 6" @click="handleShow">
+    <div class="patient-add" v-if="list.length < 6" @click="handleShow()">
       <cp-icon name="user-add" />
       <p>添加患者</p>
     </div>

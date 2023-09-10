@@ -2,10 +2,8 @@
 import RoomStatus from './components/RoomStatus.vue'
 import RoomAction from './components/RoomAction.vue'
 import RoomMessage from './components/RoomMessage.vue'
-import type { Socket } from 'socket.io-client'
-import { io } from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 import { nextTick, onMounted, onUnmounted, ref } from 'vue'
-import { baseURL } from '@/utils/request'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
 import type { ConsultOrderItem } from '@/types/consult'
@@ -21,7 +19,7 @@ const router = useRouter()
 import { MsgType } from '@/enums'
 import type { Message, TimeMessages } from '@/types/room'
 
-// 事件格式化
+// 时间格式化
 import type { Image } from '@/types/consult'
 import dayjs from 'dayjs'
 const time = ref(dayjs().format('YYYY-MM-DD HH:mm:ss'))
@@ -33,11 +31,15 @@ onUnmounted(() => {
 const consult = ref<ConsultOrderItem>()
 
 const list = ref<Message[]>([])
+
 // 初始聊天状态
 const initialMsg = ref(true)
 onMounted(async () => {
+  // 订单详情
+  const res = await getConsultOrderDetail(route.query.orderId as string)
+  consult.value = res.data
   // 建立链接，创建 socket.io 实例
-  socket = io(baseURL, {
+  socket = io('https://consult-api.itheima.net/', {
     auth: {
       token: `Bearer ${store.user?.token}`
     },
@@ -47,22 +49,23 @@ onMounted(async () => {
   })
   // 建立连接成功
   socket.on('connect', () => {
+    console.log('连接成功')
     list.value = []
   })
-  socket.on('error', (event) => {
-    // 错误异常消息
-    console.log('error')
-  })
+  // 是否断开连接
   socket.on('disconnect', () => {
-    // 已经断开连接
     console.log('disconnect')
+  })
+  // 是否连接失败
+  socket.on('error', (event) => {
+    console.log('error')
   })
   // 聊天记录
   socket.on('chatMsgList', ({ data }: { data: TimeMessages[] }) => {
-    console.log('12345678987654321')
     // 准备转换成常规消息列表
     const arr: Message[] = []
     data.forEach((item, i) => {
+      // 记录每一段消息中最早的消息时间，获取聊天记录需要使用
       if (i === 0) time.value = item.createTime
       arr.push({
         msgType: MsgType.Notify,
@@ -71,26 +74,23 @@ onMounted(async () => {
         id: item.createTime
       })
       arr.push(...item.items)
-      console.log(arr, '11111')
     })
     // 追加到聊天列表
     list.value.unshift(...arr)
-    console.log(list.value, '123')
     loading.value = false
     if (!data.length) {
       return showToast('没有聊天记录了')
     }
     // 第一次获取默认消息滚动到最底部
-    nextTick(() => {
-      if (initialMsg.value) {
-        socket.emit('updateMsgStatus', arr[arr.length - 1].id)
+    if (initialMsg.value) {
+      socket.emit('updateMsgStatus', arr[arr.length - 1].id)
+      // 第一次需要滚动到最新的消息
+      nextTick(() => {
         window.scrollTo(0, document.body.scrollHeight)
         initialMsg.value = false
-      }
-    })
+      })
+    }
   })
-  const res = await getConsultOrderDetail(route.query.orderId as string)
-  consult.value = res.data
   // 订单状态 在onMounted注册
   socket.on('statusChange', async () => {
     const res = await getConsultOrderDetail(route.query.orderId as string)
@@ -137,7 +137,6 @@ const onRefresh = () => {
 <template>
   <div class="room-page">
     <cp-nav-bar title="医生问诊室" />
-    <van-button @click="router.push(`/order/pay?id=6938308427534336`)">购买药品</van-button>
     <room-status :status="consult?.status" :countdown="consult?.countdown"></room-status>
     <!-- 下拉刷新 -->
     <van-pull-refresh v-model="loading" @refresh="onRefresh">

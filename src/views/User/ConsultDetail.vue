@@ -21,7 +21,6 @@ const route = useRoute()
 const item = ref<ConsultOrderItem>()
 onMounted(async () => {
   const res = await getConsultOrderDetail(route.params.id as string)
-  console.log(res)
   item.value = res.data
 })
 

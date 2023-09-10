@@ -23,7 +23,6 @@ const loadData = async () => {
   if (payInfo.value !== undefined) {
     priceAll.value = Number(payInfo.value.actualPayment) * 100
   }
-  console.log(payInfo.value)
   // 设置默认优惠券
   store.setCoupon(payInfo.value?.couponId)
 }
@@ -139,6 +138,7 @@ onMounted(() => {
       :order-id="orderId"
       :actualPayment="payInfo?.actualPayment"
       :onClose="onClose"
+      payCallback="room"
     />
   </div>
 </template>

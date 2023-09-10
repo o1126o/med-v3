@@ -8,19 +8,24 @@ const props = defineProps<{
   actualPayment: number
   onClose?: () => void
   show: boolean
+  payCallback: string //支付抽屉支持，设置回跳地址
 }>()
+
 const emit = defineEmits<{
   (e: 'update:show', val: boolean): void
 }>()
+
+// 支付方式 1支付宝 0微信
 const paymentMethod = ref<0 | 1>()
+
 // 跳转支付
-const pay = async () => {
-  if (paymentMethod.value === undefined) return showToast('请选择支付方式')
+const handelPay = async () => {
+  if (!paymentMethod.value) return showToast('请选择支付方式')
   showLoadingToast({ message: '跳转支付', duration: 0 })
   const res = await getConsultOrderPayUrl({
     paymentMethod: paymentMethod.value,
     orderId: props.orderId,
-    payCallback: 'http://localhost:5173/room'
+    payCallback: 'http://localhost:5173/' + props.payCallback
   })
   window.location.href = res.data.payUrl
 }
@@ -49,7 +54,7 @@ const pay = async () => {
           </van-cell>
         </van-cell-group>
         <div class="btn">
-          <van-button type="primary" round block @click="pay">⽴即⽀付</van-button>
+          <van-button type="primary" round block @click="handelPay">⽴即⽀付</van-button>
         </div>
       </div>
     </van-action-sheet>

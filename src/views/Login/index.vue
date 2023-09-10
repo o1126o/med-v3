@@ -28,20 +28,18 @@ const show = ref<boolean>(false)
 
 // 登录
 const handleLogin = async () => {
-  console.log('123456')
   if (!agree.value) return showToast('请勾选我已同意')
   // 通过验证
   try {
     const loginRes = isPass.value
       ? await loginByPassword(loginFrom.value.mobile, loginFrom.value.password)
       : await loginByMobile(loginFrom.value.mobile, loginFrom.value.code)
-    console.log(loginRes)
     store.setUser(loginRes.data)
     // 如果有回调地址的话就回跳 否则跳到个人中心
     router.push((route.query.returnUrl as string) || '/user')
     showToast('登录成功')
   } catch (error) {
-    console.log(error)
+    return false
   }
 }
 
@@ -52,8 +50,7 @@ const send = async () => {
   // 倒计时time的值⼤于0，此时不能发送验证码
   if (time.value > 0) return
   // 调用接口
-  const codeRef = await sendMobileCode(loginFrom.value.mobile, 'login')
-  console.log('codeRef=>', codeRef.data.data.code)
+  const codeRef: any = await sendMobileCode(loginFrom.value.mobile, 'login')
   // 倒计时逻辑
   showToast('发送成功')
   time.value = 60

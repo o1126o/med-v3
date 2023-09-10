@@ -44,7 +44,6 @@ const onAfterRead: UploaderAfterRead = (item) => {
   item.message = '上传中...'
   uploadImage(item.file)
     .then((res) => {
-      console.log(res)
       item.status = 'done'
       item.message = undefined
       item.url = res.data.url
