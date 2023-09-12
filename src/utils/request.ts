@@ -6,7 +6,7 @@ import router from '@/router'
 import type { Data } from '../types/request'
 const store = useUserStore()
 
-const baseURL = '/dev-api'
+const baseURL = 'http://consult-api.itheima.net'
 const instance = axios.create({
   baseURL,
   timeout: 3000

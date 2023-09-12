@@ -21,7 +21,6 @@ const onLoad = async () => {
   // 加载更多
   const res = await getKnowledgePage(params.value)
   list.value.push(...res.data.rows)
-  // list.value = res.data.rows // 会一直刷新
   if (params.value.current >= res.data.pageTotal) {
     finished.value = true
   } else {

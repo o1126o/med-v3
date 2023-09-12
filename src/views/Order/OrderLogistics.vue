@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { getMedicalOrderLogistics } from '@/servces/order'
-import type { Logistics } from '@/types/order'
+import type { Logistics, Location } from '@/types/order'
 import { onMounted, ref } from 'vue'
 import startImg from '@/assets/start.png'
 import endImg from '@/assets/end.png'
@@ -49,7 +49,7 @@ onMounted(async () => {
           let startLngLat = list.shift()
           let endLngLat = list.pop()
 
-          const getMarker = (point: LogisticsInfo, image: string, width = 25, height = 30) => {
+          const getMarker = (point: Location, image: string, width = 25, height = 30) => {
             const icon = new AMap.Icon({
               size: new AMap.Size(width, width), // 图标尺寸
               image: image, // Icon的图像

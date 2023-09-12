@@ -8,6 +8,7 @@ import type { Message, Prescription } from '@/types/room'
 import { IllnessTime } from '@/enums'
 import { flagOptions, timeOptions } from '@/servces/constants'
 import { useUserStore } from '@/stores'
+import EvaluateCard from './EvaluateCard.vue'
 const store = useUserStore()
 // 点击处方的跳转,购买药品
 const router = useRouter()
@@ -99,7 +100,10 @@ const showPrescription = async (id?: string) => {
         <van-image :src="store.user?.avatar" />
       </div>
       <!-- 发送图片 -->
-      <div class="msg msg-to">
+      <div
+        class="msg msg-to"
+        v-if="item.msgType === MsgType.MsgImage && store.user?.id === item.from"
+      >
         <div class="content">
           <div class="time">{{ formatTime(item.createTime) }}</div>
           <van-image fit="contain" :src="item.msg.picture?.url" />
@@ -111,15 +115,18 @@ const showPrescription = async (id?: string) => {
         class="msg msg-from"
         v-if="item.msgType === MsgType.MsgText && store.user?.id !== item.from"
       >
-        <van-image :src="store.user?.avatar" />
+        <van-image :src="item.fromAvatar" />
         <div class="content">
           <div class="time">{{ formatTime(item.createTime) }}</div>
           <div class="pao">{{ item.msg.content }}</div>
         </div>
       </div>
-      <!--  接收图片 -->
-      <div class="msg msg-from">
-        <van-image :src="store.user?.avatar" />
+      <!--  接收图片 out -->
+      <div
+        class="msg msg-from"
+        v-if="item.msgType === MsgType.MsgImage && store.user?.id !== item.from"
+      >
+        <van-image :src="item.fromAvatar" />
         <div class="content">
           <div class="time">{{ formatTime(item.createTime) }}</div>
           <van-image fit="contain" :src="item.msg.picture?.url" />
@@ -157,7 +164,19 @@ const showPrescription = async (id?: string) => {
           </div>
         </div>
       </div>
+      <!-- 结束后问诊信息 -->
+      <div class="msg msg-tip msg-tip-cancel" v-if="item.msgType === MsgType.NotifyCancel">
+        <div class="content">
+          <span>{{ item.msg.content }}</span>
+        </div>
+      </div>
       <!-- 评价卡片，后期实现 -->
+      <div
+        class="msg msg-comment"
+        v-if="item.msgType === MsgType.CardEva || item.msgType === MsgType.CardEvaForm"
+      >
+        <evaluate-card :evaluateDoc="item.msg.evaluateDoc" />
+      </div>
     </template>
   </div>
 </template>

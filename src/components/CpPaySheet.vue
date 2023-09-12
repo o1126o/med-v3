@@ -25,7 +25,10 @@ const handelPay = async () => {
   const res = await getConsultOrderPayUrl({
     paymentMethod: paymentMethod.value,
     orderId: props.orderId,
-    payCallback: 'http://localhost:5173/' + props.payCallback
+    payCallback:
+      (import.meta.env.MODE === 'development'
+        ? 'http://localhost:5173/#/'
+        : 'http://154.8.151.41/#/') + props.payCallback
   })
   window.location.href = res.data.payUrl
 }

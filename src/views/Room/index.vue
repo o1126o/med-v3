@@ -37,6 +37,7 @@ const initialMsg = ref(true)
 onMounted(async () => {
   // 订单详情
   const res = await getConsultOrderDetail(route.query.orderId as string)
+  console.log(res, '111')
   consult.value = res.data
   // 建立链接，创建 socket.io 实例
   socket = io('https://consult-api.itheima.net/', {
@@ -51,6 +52,7 @@ onMounted(async () => {
   socket.on('connect', () => {
     console.log('连接成功')
     list.value = []
+    console.log(list.value, 'list')
   })
   // 是否断开连接
   socket.on('disconnect', () => {
@@ -66,7 +68,7 @@ onMounted(async () => {
     const arr: Message[] = []
     data.forEach((item, i) => {
       // 记录每一段消息中最早的消息时间，获取聊天记录需要使用
-      if (i === 0) time.value = item.createTime
+      // if (i === 0) time.value = item.createTime
       arr.push({
         msgType: MsgType.Notify,
         msg: { content: item.createTime },
@@ -76,7 +78,8 @@ onMounted(async () => {
       arr.push(...item.items)
     })
     // 追加到聊天列表
-    list.value.unshift(...arr)
+    list.value = arr
+    console.log(list.value, '222')
     loading.value = false
     if (!data.length) {
       return showToast('没有聊天记录了')
@@ -98,6 +101,7 @@ onMounted(async () => {
   })
   // 接收消息 在onMounted注册
   socket.on('receiveChatMsg', async (event) => {
+    console.log(event, '333')
     list.value.push(event)
     await nextTick()
     socket.emit('updateMsgStatus', event.id)
@@ -106,12 +110,16 @@ onMounted(async () => {
 })
 
 // 发送消息
-const sendText = (text: string) => {
+const sendText = async (text: string) => {
   // 发送信息需要  发送人  收消息人  消息类型  消息内容
   socket.emit('sendChatMsg', {
+    // 发送人
     from: store.user?.id,
+    // 接收人
     to: consult.value?.docInfo?.id,
+    // 消息类型
     msgType: MsgType.MsgText,
+    // 消息内容
     msg: { content: text }
   })
 }
@@ -132,6 +140,18 @@ const onRefresh = () => {
   // 触发下拉
   socket.emit('getChatMsgList', 20, time.value, route.query.orderId)
 }
+
+/* / 提供医生ID和订单ID  */
+import { provide } from 'vue'
+provide('consult', consult)
+const completeEva = (score: number) => {
+  const item = list.value.find((item) => item.msgType === MsgType.CardEvaForm)
+  if (item) {
+    item.msg.evaluateDoc = { score }
+    item.msgType = MsgType.CardEva
+  }
+}
+provide('completeEva', completeEva)
 </script>
 
 <template>
